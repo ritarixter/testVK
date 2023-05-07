@@ -1,0 +1,154 @@
+@import "../../styles/variables.scss";
+
+.dropdownList {
+  min-width: 242px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.title {
+  margin-left: 16px;
+}
+
+.select {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0;
+  border: 1px solid $primaryColor;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 12px 0;
+  color: $primaryColor;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &_open {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  &.error {
+    border: 1px solid $errorColor;
+  }
+
+  &.error::after {
+    left: 0;
+    bottom: -25px;
+    position: absolute;
+    content: "Обязательное поле";
+    color: $errorColor;
+  }
+}
+
+.menu {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: absolute;
+  z-index: 2;
+  width: 100.9%;
+  margin-left: -1px;
+  max-height: 181px;
+  margin-top: 13px;
+  border: 1px solid $primaryColor;
+  border-top: none;
+  &.bigHeight {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    &::-webkit-scrollbar {
+      width: 3px;
+      background: #e4e4e4;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      height: 42px;
+      background: #8d8d8d;
+      border-radius: 3px;
+    }
+  }
+  &.bigWidth {
+    z-index: 0;
+    width: 514px;
+  }
+}
+
+.option {
+  background-color: $secondaryColor;
+  padding: 6px 12px 6px 16px;
+  font-size: 16px;
+  line-height: 24px;
+  transition: color 0.1s linear;
+  box-sizing: border-box;
+
+  &:hover:not(.disabled) {
+    background: $activeColor;
+    color: $secondaryColor;
+  }
+
+  &.disabled {
+    background-color: rgb(241, 241, 241);
+    cursor: not-allowed;
+  }
+}
+
+.arrow {
+  position: absolute;
+  top: 19px;
+  right: 16px;
+  transition: all 0.2s linear;
+
+  &_open {
+    transform: rotateX(180deg);
+  }
+}
+
+@media (max-width: 767px) {
+  .select {
+    padding: 8px 0;
+  }
+
+  .arrow {
+    top: 16px;
+  }
+
+  .menu {
+    width: 100.4%;
+    margin-left: -1.5px;
+    max-height: 181px;
+    margin-top: 8.5px;
+    &.bigWidth {
+      width: 100.4%;
+    }
+  }
+
+  .title {
+    margin-left: 14px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .option {
+    padding: 4px 10px 4px 14px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
+@media (max-width: 570px) {
+  .menu {
+    width: 100.6%;
+    &.bigWidth {
+      width: 100.6%;
+    }
+  }
+}
+
+@media (max-width: 386px) {
+  .menu {
+    width: 100.8%;
+    &.bigWidth {
+      width: 100.8%;
+    }
+  }
+}
