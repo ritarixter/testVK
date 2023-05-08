@@ -3,7 +3,6 @@ import styles from "./DropdownList.module.scss";
 import arrow from "../../images/icons/arrow.svg";
 import { TDropdownList } from "../../types";
 import { Label } from "../Label";
-import { v4 as uuidv4 } from "uuid";
 
 export const DropdownList: FC<TDropdownList> = ({
   data,
@@ -15,7 +14,7 @@ export const DropdownList: FC<TDropdownList> = ({
   const [open, setOpen] = useState<boolean>(false);
 
   const handlerClick = (index: number) => {
-    setState(data[index]);
+    setState(data[index].name);
     setOpen(false);
   };
 
@@ -44,16 +43,16 @@ export const DropdownList: FC<TDropdownList> = ({
             {data.map((item, index) => (
               <li
                 className={`${styles.option} ${
-                  item.includes("забронировано") && styles.disabled
+                  item.name.includes("забронировано") && styles.disabled
                 }`}
-                key={uuidv4()}
+                key={item.id}
                 onClick={() => {
-                  if (!item.includes("забронировано")) {
+                  if (!item.name.includes("забронировано")) {
                     handlerClick(index);
                   }
                 }}
               >
-                {item}
+                {item.name}
               </li>
             ))}
           </ul>
