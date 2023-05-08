@@ -4,37 +4,44 @@ import {
   towers,
   floors,
   timeInterval,
+  initialData,
 } from "../../utils/data";
 import styles from "./App.module.scss";
 import { DropdownList } from "../DropdownList";
 import { Label } from "../Label";
 import { Calendar } from "../Calendar";
-import { isFutureDate } from "../../utils/utils";
-import { isToday } from "date-fns";
+import { isToday, set, isAfter } from "date-fns";
+import { registerLocale } from "react-datepicker";
+import enGB from "date-fns/locale/en-GB";
+import { TData } from "../../types";
+import { formatDate } from "../../utils";
 
 export const App: FC = () => {
-  const [tower, setTower] = useState<string>("Выберите корпус");
+  const [tower, setTower] = useState<string>(initialData.tower);
   const [conferenceRoom, setConferenceRoom] = useState<string>(
-    "Выберите переговорную"
+    initialData.conferenceRoom
   );
   const [date, setDate] = useState<Date>(new Date());
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [floor, setFloor] = useState<string>("Выберите этаж");
-  const [textarea, setTextarea] = useState<string>("");
-  const [time, setTime] = useState<string>("Выберите время");
+  const [currentDate] = useState<Date>(new Date());
+  const [floor, setFloor] = useState<string>(initialData.floor);
+  const [textarea, setTextarea] = useState<string>(initialData.textarea);
+  const [time, setTime] = useState<string>(initialData.time);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [errorDate, setErrorDate] = useState<boolean>(false);
-  const [intervals, setIntervals] = useState<Array<string>>([]);
-
+  const [intervals, setIntervals] = useState<Array<TData>>([]);
   const handleClear = () => {
-    setTower("Выберите корпус");
-    setConferenceRoom("Выберите переговорную");
+    setTower(initialData.tower);
+    setConferenceRoom(initialData.conferenceRoom);
     setDate(new Date());
-    setFloor("Выберите этаж");
-    setTextarea("");
-    setTime("Выберите время");
+    setFloor(initialData.floor);
+    setTextarea(initialData.textarea);
+    setTime(initialData.time);
     setDisabled(true);
   };
+
+  useEffect(() => {
+    registerLocale("en-GB", enGB);
+  }, []);
 
   useEffect(() => {
     //Валидатор; пока обязательные поля не будут выбраны - кнопка disabled
@@ -50,7 +57,7 @@ export const App: FC = () => {
   }, [tower, conferenceRoom, floor, time, errorDate]);
 
   useEffect(() => {
-    let currentTime: Array<string> = [];
+    let currentTime: Array<TData> = [];
     setTime("Выберите время");
     setDisabled(true);
 
@@ -59,31 +66,41 @@ export const App: FC = () => {
       const nowHours = currentDate.getHours();
       currentTime = timeInterval.map((item) => {
         if (nowHours < item.hour) {
-          return item.interval;
+          return { name: item.interval, id: item.hour };
         } else {
-          return item.interval + " (забронировано)";
+          return { name: item.interval + " (забронировано)", id: item.hour };
         }
       });
     } else {
       currentTime = timeInterval.map((item) => {
-        return item.interval;
+        return { name: item.interval, id: item.hour };
       });
     }
     setIntervals(currentTime);
 
     //Проверяет корректность выбранной даты. Дата должна быть не позднее сегодняшней
-    if (isFutureDate({ date, currentDate })) {
+    if (
+      isAfter(
+        date,
+        set(currentDate, {
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        })
+      )
+    ) {
       setErrorDate(false);
     } else {
       setErrorDate(true);
     }
-  }, [date]);
+  }, [date, currentDate]);
 
   const handleClick = () => {
     const booking = {
       tower: tower,
       conferenceRoom: conferenceRoom,
-      date: date.toISOString().slice(0, 10),
+      date: formatDate(date),
       time: time,
       floor: floor,
       comment: textarea,

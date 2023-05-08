@@ -1,18 +1,17 @@
-import { FC, useEffect } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
+import { FC } from "react";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import enGB from "date-fns/locale/en-GB";
 import styles from "./Calendar.module.scss";
-import { getDatePadTo2Digits, isDayWeekend } from "./utils";
+import { isDayWeekend, years } from "../../utils";
 import getYear from "date-fns/getYear";
 import getMonth from "date-fns/getMonth";
 import { CalendarCustomInput } from "./CalendarCustomInput";
 import { TCalendar } from "../../types";
-import { years, months } from "./constants";
+import { dateFormat, months } from "./constants";
 
 export const Calendar: FC<TCalendar> = ({ startDate, setStartDate, error }) => {
   const dayClassNameFunction = (date: Date) => {
-    if (getDatePadTo2Digits(date) === getDatePadTo2Digits(startDate as Date)) {
+    if (date === startDate) {
       return styles.currentDay;
     }
     if (isDayWeekend(date)) {
@@ -21,10 +20,6 @@ export const Calendar: FC<TCalendar> = ({ startDate, setStartDate, error }) => {
     return styles.days;
   };
 
-  useEffect(() => {
-    registerLocale("en-GB", enGB);
-  }, []);
-
   return (
     <div className={styles.wrapper}>
       <DatePicker
@@ -32,7 +27,7 @@ export const Calendar: FC<TCalendar> = ({ startDate, setStartDate, error }) => {
         className={styles.style}
         dayClassName={dayClassNameFunction}
         showPopperArrow={false}
-        dateFormat="dd.MM.yyyy"
+        dateFormat={dateFormat}
         locale={"en-GB"}
         selected={startDate}
         onChange={(date) => setStartDate(date as Date)}

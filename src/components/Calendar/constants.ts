@@ -1,6 +1,3 @@
-import range from "lodash/range";
-import getYear from "date-fns/getYear";
-
 export const months = [
   "Январь",
   "Февраль",
@@ -16,4 +13,5 @@ export const months = [
   "Декабрь",
 ];
 
-export const years = range(getYear(new Date()) - 1, getYear(new Date()) + 6);
+export const dateFormat="dd.MM.yyyy"
+
